@@ -21,7 +21,6 @@ export function votePoll(params: VotePollParams): VoteResponse {
 
   for (const optionId of optionIds) {
     const validOption = stored.poll.options.some((o) => o.id === optionId)
-
     if (!validOption) {
       throw new Error('Invalid option code:INVALID_OPTION')
     }
@@ -37,7 +36,9 @@ export function votePoll(params: VotePollParams): VoteResponse {
   }
 
   for (const optionId of optionIds) {
-    db.recordVote(pollId, optionId, identifiers)
+    for (const identifier of identifiers) {
+      db.addVote(pollId, optionId, identifier)
+    }
   }
 
   const results = getPollResults({ pollId, voterIp, voterToken })

@@ -14,10 +14,11 @@ export function closePoll(params: ClosePollParams): { success: true; poll: Poll 
     throw new Error('Forbidden code:FORBIDDEN')
   }
 
-  stored.poll.status = 'closed'
+  db.closePoll(pollId)
+  const updated = db.getPoll(pollId)!
 
   return {
     success: true,
-    poll: stored.poll,
+    poll: updated.poll,
   }
 }

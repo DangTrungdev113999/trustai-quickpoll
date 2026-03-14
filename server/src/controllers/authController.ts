@@ -1,4 +1,5 @@
 import type { Request, Response } from 'express'
+import { randomUUID } from 'crypto'
 import { db } from '../lib/db'
 
 const MOCK_MAGIC_TOKEN = 'valid-magic-link-token'
@@ -11,8 +12,8 @@ export async function sendMagicLink(req: Request, res: Response) {
     return
   }
 
-  // Store magic link token (mock: use constant token for testing)
-  db.storeMagicLinkToken(MOCK_MAGIC_TOKEN, email.trim())
+  const expiresAt = new Date(Date.now() + 15 * 60 * 1000).toISOString() // 15 minutes
+  db.createMagicLink(MOCK_MAGIC_TOKEN, email.trim(), expiresAt)
   console.log(`[MOCK] Magic link for ${email}: /auth/verify?token=${MOCK_MAGIC_TOKEN}`)
 
   res.json({ success: true, message: 'Magic link sent to your email' })
@@ -21,18 +22,30 @@ export async function sendMagicLink(req: Request, res: Response) {
 export async function verifyMagicLink(req: Request, res: Response) {
   const { token } = req.body
 
-  const email = db.getMagicLinkEmail(token)
-  if (!email) {
+  const linkData = db.getMagicLinkEmail(token)
+  if (!linkData) {
     res.status(401).json({ error: 'Invalid or expired magic link', code: 'UNAUTHORIZED' })
     return
   }
 
+  if (new Date(linkData.expiresAt) < new Date()) {
+    db.deleteMagicLink(token)
+    res.status(401).json({ error: 'Magic link expired', code: 'UNAUTHORIZED' })
+    return
+  }
+
   // Create or find user
-  const user = db.createUser(email)
+  let user = db.getUserByEmail(linkData.email)
+  if (!user) {
+    user = db.createUser(randomUUID(), linkData.email)
+  }
 
   // Create session
-  const sessionToken = db.createSession(user.id)
+  const sessionToken = randomUUID()
+  db.createSession(sessionToken, user.id)
   const expiresAt = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString()
+
+  db.deleteMagicLink(token)
 
   res.json({
     success: true,

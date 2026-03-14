@@ -17,10 +17,14 @@ describe('POST /api/polls/:id/vote (M2 updates)', () => {
       .post(`/api/polls/${pollId}/close`)
       .set('Authorization', 'Bearer valid-owner-token')
 
-    // Try to vote
+    // Get poll to find option IDs
+    const pollRes = await request(app).get(`/api/polls/${pollId}`)
+    const optionId = pollRes.body.poll.options[0].id
+
+    // Try to vote on closed poll
     const res = await request(app)
       .post(`/api/polls/${pollId}/vote`)
-      .send({ optionIds: [createRes.body.pollId] })
+      .send({ optionIds: [optionId] })
 
     expect(res.status).toBe(400)
     expect(res.body.code).toBe('POLL_CLOSED')

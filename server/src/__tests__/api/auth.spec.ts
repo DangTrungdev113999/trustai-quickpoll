@@ -1,4 +1,4 @@
-import { describe, it, expect } from 'vitest'
+import { describe, it, expect, beforeAll } from 'vitest'
 import request from 'supertest'
 import app from '../../app'
 
@@ -24,6 +24,13 @@ describe('POST /api/auth/send-magic-link', () => {
 })
 
 describe('POST /api/auth/verify-magic-link', () => {
+  beforeAll(async () => {
+    // Pre-create magic link for tests
+    await request(app)
+      .post('/api/auth/send-magic-link')
+      .send({ email: 'verify-test@example.com' })
+  })
+
   it('should return session + user for valid token', async () => {
     const res = await request(app)
       .post('/api/auth/verify-magic-link')
@@ -51,10 +58,25 @@ describe('POST /api/auth/verify-magic-link', () => {
 })
 
 describe('GET /api/auth/me', () => {
+  let sessionToken: string
+
+  beforeAll(async () => {
+    // Create user + session for /me tests
+    await request(app)
+      .post('/api/auth/send-magic-link')
+      .send({ email: 'me-test@example.com' })
+
+    const verifyRes = await request(app)
+      .post('/api/auth/verify-magic-link')
+      .send({ token: 'valid-magic-link-token' })
+
+    sessionToken = verifyRes.body.session.token
+  })
+
   it('should return user data with valid token', async () => {
     const res = await request(app)
       .get('/api/auth/me')
-      .set('Authorization', 'Bearer valid-session-token')
+      .set('Authorization', `Bearer ${sessionToken}`)
 
     expect(res.status).toBe(200)
     expect(res.body).toHaveProperty('user')
