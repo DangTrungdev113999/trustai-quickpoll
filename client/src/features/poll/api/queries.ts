@@ -24,6 +24,7 @@ export function usePoll(pollId: string) {
     queryKey: pollKeys.detail(pollId),
     queryFn: () => api.get<PollResults>(`/polls/${pollId}`),
     enabled: !!pollId,
+    refetchInterval: 3000, // Poll every 3s for real-time updates
   })
 }
 
