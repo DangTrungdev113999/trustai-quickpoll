@@ -1,18 +1,26 @@
 {
   "project": "quickpoll",
   "github": "git@github.com:DangTrungdev113999/trustai-quickpoll.git",
-  "channel_id": null,
-  "status": "PLANNING",
-  "current_milestone": null,
-  "milestones": [],
+  "channel_id": "1482239007864782999",
+  "status": "IN_PROGRESS",
+  "current_milestone": "M1",
+  "milestones": [
+    {
+      "id": "M1",
+      "name": "Core Poll Flow",
+      "status": "IN_PROGRESS",
+      "features": ["core-poll-flow"],
+      "thread_id": "1482242406198935675"
+    }
+  ],
   "ports": {
     "backend": 3002,
     "frontend": 5174,
     "tunnel_url": null
   },
   "last_activity": {
-    "agent": null,
-    "action": null,
-    "timestamp": null
+    "agent": "Marcus",
+    "action": "created_task_files",
+    "timestamp": "2026-03-14T05:04:00Z"
   }
 }
