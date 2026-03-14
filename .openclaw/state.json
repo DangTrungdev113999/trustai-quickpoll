@@ -23,11 +23,11 @@
   "ports": {
     "backend": 3002,
     "frontend": 5174,
-    "tunnel_url": "https://tigers-pirates-additions-treasure.trycloudflare.com"
+    "tunnel_url": "https://ana-constitution-engine-very.trycloudflare.com"
   },
   "last_activity": {
     "agent": "Marcus",
-    "action": "tunnel_restart",
-    "timestamp": "2026-03-14T08:32:00Z"
+    "action": "ux_improvements_deployed",
+    "timestamp": "2026-03-14T08:44:00Z"
   }
 }
