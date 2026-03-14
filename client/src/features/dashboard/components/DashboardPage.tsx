@@ -68,7 +68,7 @@ export function DashboardPage() {
             )}
           </div>
           {activeTab === 'all' && (
-            <Button onClick={() => navigate('/')} size="lg">
+            <Button onClick={() => navigate('/create')} size="lg">
               <Plus className="mr-2 h-5 w-5" />
               Tạo poll đầu tiên
             </Button>
@@ -123,7 +123,7 @@ export function DashboardPage() {
           <h1 className="text-2xl font-bold">Dashboard</h1>
           <p className="text-sm text-muted-foreground">Quản lý polls của bạn</p>
         </div>
-        <Button onClick={() => navigate('/')}>
+        <Button onClick={() => navigate('/create')}>
           <Plus className="mr-2 h-4 w-4" />
           Tạo poll mới
         </Button>

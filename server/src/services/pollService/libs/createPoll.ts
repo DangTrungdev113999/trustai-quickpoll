@@ -32,6 +32,6 @@ export function createPoll(params: CreatePollParams): CreatePollResult {
 
   return {
     pollId,
-    shareUrl: `/polls/${pollId}`,
+    shareUrl: `/poll/${pollId}`,
   }
 }

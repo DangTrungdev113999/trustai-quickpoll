@@ -7,7 +7,8 @@ import { AuthLoginPage } from '@/features/auth/components/AuthLoginPage'
 import { AuthVerifyPage } from '@/features/auth/components/AuthVerifyPage'
 
 export const router = createBrowserRouter([
-  { path: '/', element: <CreatePollPage /> },
+  { path: '/', element: <DashboardPage /> },
+  { path: '/create', element: <CreatePollPage /> },
   { path: '/poll/:pollId', element: <VotePollPage /> },
   { path: '/polls/:pollId', element: <PollDetailPage /> },
   { path: '/dashboard', element: <DashboardPage /> },

@@ -115,7 +115,7 @@ export function CreatePollPage() {
                     <ExternalLink className="mr-2 h-4 w-4" />
                     Xem vote page
                   </Button>
-                  <Button onClick={() => navigate('/')} variant="outline" className="flex-1">
+                  <Button onClick={() => navigate('/create')} variant="outline" className="flex-1">
                     <Plus className="mr-2 h-4 w-4" />
                     Tạo poll mới
                   </Button>
