@@ -2,6 +2,7 @@ import express from 'express'
 import cors from 'cors'
 import cookieParser from 'cookie-parser'
 import pollRoutes from './routes/pollRoutes'
+import authRoutes from './routes/authRoutes'
 
 const app = express()
 
@@ -10,6 +11,7 @@ app.use(express.json())
 app.use(cookieParser())
 
 app.use('/api', pollRoutes)
+app.use('/api', authRoutes)
 
 // Error handler
 app.use((err: Error, _req: express.Request, res: express.Response, _next: express.NextFunction) => {
@@ -25,6 +27,9 @@ app.use((err: Error, _req: express.Request, res: express.Response, _next: expres
       POLL_NOT_FOUND: 404,
       ALREADY_VOTED: 409,
       INVALID_OPTION: 400,
+      FORBIDDEN: 403,
+      POLL_CLOSED: 400,
+      UNAUTHORIZED: 401,
     }
 
     const status = statusMap[code] ?? 500

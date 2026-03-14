@@ -3,7 +3,7 @@ import { db } from '../../../lib/db'
 import type { CreatePollParams, CreatePollResult } from '../types'
 
 export function createPoll(params: CreatePollParams): CreatePollResult {
-  const { question, options } = params
+  const { question, options, allowMultiple = false, ownerId } = params
 
   if (!question.trim()) {
     throw new Error('Question is required code:VALIDATION_ERROR')
@@ -28,7 +28,7 @@ export function createPoll(params: CreatePollParams): CreatePollResult {
     text,
   }))
 
-  db.createPoll(pollId, question, pollOptions)
+  db.createPoll(pollId, question, pollOptions, allowMultiple, ownerId)
 
   return {
     pollId,

@@ -10,8 +10,8 @@ function getVoterIp(req: Request): string {
 }
 
 export async function createPoll(req: Request, res: Response) {
-  const { question, options } = req.body
-  const result = pollService.createPoll({ question, options })
+  const { question, options, allowMultiple } = req.body
+  const result = pollService.createPoll({ question, options, allowMultiple, ownerId: req.userId })
   res.status(201).json(result)
 }
 
@@ -36,10 +36,49 @@ export async function getPoll(req: Request, res: Response) {
 
 export async function votePoll(req: Request, res: Response) {
   const { id } = req.params
-  const { optionId } = req.body
   const voterIp = getVoterIp(req)
   const voterToken = req.cookies?.['X-Voter-Token'] as string | undefined
 
-  const result = pollService.votePoll({ pollId: id, optionId, voterIp, voterToken })
+  // Support both optionId (M1 compat) and optionIds (M2)
+  let optionIds: string[]
+  if (req.body.optionIds) {
+    optionIds = req.body.optionIds
+  } else if (req.body.optionId) {
+    optionIds = [req.body.optionId]
+  } else {
+    optionIds = []
+  }
+
+  const result = pollService.votePoll({ pollId: id, optionIds, voterIp, voterToken })
+  res.json(result)
+}
+
+export async function listPolls(req: Request, res: Response) {
+  const status = req.query.status as string | undefined
+  const polls = pollService.getPolls({ status })
+  res.json({ polls })
+}
+
+export async function closePoll(req: Request, res: Response) {
+  const { id } = req.params
+  const result = pollService.closePoll({ pollId: id, userId: req.userId })
+  res.json(result)
+}
+
+export async function deletePoll(req: Request, res: Response) {
+  const { id } = req.params
+  const result = pollService.deletePoll({ pollId: id, userId: req.userId })
+  res.json(result)
+}
+
+export async function getQRCode(req: Request, res: Response) {
+  const { id } = req.params
+  const result = await pollService.getQRCode({ pollId: id })
+  res.json(result)
+}
+
+export async function migratePolls(req: Request, res: Response) {
+  const { pollIds } = req.body
+  const result = pollService.migratePolls({ pollIds, userId: req.userId! })
   res.json(result)
 }
