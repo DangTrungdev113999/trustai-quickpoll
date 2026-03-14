@@ -23,11 +23,16 @@
   "ports": {
     "backend": 3002,
     "frontend": 5174,
-    "tunnel_url": "https://ana-constitution-engine-very.trycloudflare.com"
+    "tunnel_url": "https://milan-reader-greg-durable.trycloudflare.com"
+  },
+  "database": {
+    "type": "SQLite",
+    "file": "server/data/quickpoll.db",
+    "persistent": true
   },
   "last_activity": {
     "agent": "Marcus",
-    "action": "ux_improvements_deployed",
-    "timestamp": "2026-03-14T08:44:00Z"
+    "action": "sqlite_migration_complete",
+    "timestamp": "2026-03-14T08:59:00Z"
   }
 }
