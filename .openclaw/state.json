@@ -1,0 +1,18 @@
+{
+  "project": "quickpoll",
+  "github": "git@github.com:DangTrungdev113999/trustai-quickpoll.git",
+  "channel_id": null,
+  "status": "PLANNING",
+  "current_milestone": null,
+  "milestones": [],
+  "ports": {
+    "backend": 3001,
+    "frontend": 5173,
+    "tunnel_url": null
+  },
+  "last_activity": {
+    "agent": null,
+    "action": null,
+    "timestamp": null
+  }
+}
