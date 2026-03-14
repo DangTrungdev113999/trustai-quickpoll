@@ -47,7 +47,7 @@ export function useVotePoll(pollId: string) {
 export function useDashboard() {
   return useQuery({
     queryKey: pollKeys.all,
-    queryFn: () => api.get<DashboardResponse>('/polls/dashboard'),
+    queryFn: () => api.get<DashboardResponse>('/polls'),
   })
 }
 

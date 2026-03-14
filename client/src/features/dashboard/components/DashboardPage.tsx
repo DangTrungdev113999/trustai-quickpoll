@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { Plus, BarChart3, Trash2 } from 'lucide-react'
+import { Plus, BarChart3, Trash2, Eye } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
@@ -50,11 +50,29 @@ export function DashboardPage() {
     }
 
     if (filteredPolls.length === 0) {
+      const emptyMessage = {
+        all: 'Bạn chưa tạo poll nào. Tạo poll đầu tiên để bắt đầu!',
+        active: 'Không có poll đang mở',
+        closed: 'Không có poll đã đóng',
+      }[activeTab]
+
       return (
-        <div className="flex flex-col items-center gap-4 py-16">
-          <BarChart3 className="h-12 w-12 text-muted-foreground" />
-          <p className="text-muted-foreground">Chưa có poll nào</p>
-          <Button onClick={() => navigate('/')}>Tạo poll mới</Button>
+        <div className="flex flex-col items-center gap-4 py-16 text-center">
+          <BarChart3 className="h-16 w-16 text-muted-foreground" />
+          <div className="space-y-2">
+            <p className="text-lg font-medium text-muted-foreground">{emptyMessage}</p>
+            {activeTab === 'all' && (
+              <p className="text-sm text-muted-foreground">
+                Dashboard giúp bạn quản lý tất cả polls: xem kết quả, QR code, đóng/xóa polls.
+              </p>
+            )}
+          </div>
+          {activeTab === 'all' && (
+            <Button onClick={() => navigate('/')} size="lg">
+              <Plus className="mr-2 h-5 w-5" />
+              Tạo poll đầu tiên
+            </Button>
+          )}
         </div>
       )
     }
@@ -65,7 +83,7 @@ export function DashboardPage() {
           <Card
             key={poll.id}
             className="group relative cursor-pointer transition-shadow hover:shadow-md"
-            onClick={() => navigate(`/poll/${poll.id}`)}
+            onClick={() => navigate(`/polls/${poll.id}`)}
           >
             {poll.status === 'closed' && (
               <Badge variant="secondary" className="absolute right-3 top-3">
@@ -73,10 +91,13 @@ export function DashboardPage() {
               </Badge>
             )}
             <CardHeader>
-              <CardTitle className="line-clamp-2 text-base">{poll.question}</CardTitle>
+              <CardTitle className="line-clamp-2 pr-8 text-base">{poll.question}</CardTitle>
             </CardHeader>
             <CardContent className="flex items-center justify-between">
-              <span className="text-sm text-muted-foreground">{poll.totalVotes} votes</span>
+              <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                <Eye className="h-4 w-4" />
+                <span>{poll.totalVotes} votes</span>
+              </div>
               <Button
                 variant="ghost"
                 size="icon"
@@ -98,7 +119,10 @@ export function DashboardPage() {
   return (
     <div className="mx-auto max-w-4xl space-y-6 p-4">
       <div className="flex items-center justify-between">
-        <h1 className="text-2xl font-bold">Dashboard</h1>
+        <div>
+          <h1 className="text-2xl font-bold">Dashboard</h1>
+          <p className="text-sm text-muted-foreground">Quản lý polls của bạn</p>
+        </div>
         <Button onClick={() => navigate('/')}>
           <Plus className="mr-2 h-4 w-4" />
           Tạo poll mới
@@ -107,9 +131,13 @@ export function DashboardPage() {
 
       <Tabs value={activeTab} onValueChange={(v) => setActiveTab(v as TabValue)}>
         <TabsList>
-          <TabsTrigger value="all">Tất cả</TabsTrigger>
-          <TabsTrigger value="active">Đang mở</TabsTrigger>
-          <TabsTrigger value="closed">Đã đóng</TabsTrigger>
+          <TabsTrigger value="all">Tất cả ({polls.length})</TabsTrigger>
+          <TabsTrigger value="active">
+            Đang mở ({polls.filter((p) => p.status === 'active').length})
+          </TabsTrigger>
+          <TabsTrigger value="closed">
+            Đã đóng ({polls.filter((p) => p.status === 'closed').length})
+          </TabsTrigger>
         </TabsList>
       </Tabs>
 
