@@ -8,7 +8,7 @@
     {
       "id": "M1",
       "name": "Core Poll Flow",
-      "status": "IN_PROGRESS",
+      "status": "DONE",
       "features": ["core-poll-flow"],
       "thread_id": "1482242406198935675"
     }
@@ -16,11 +16,11 @@
   "ports": {
     "backend": 3002,
     "frontend": 5174,
-    "tunnel_url": null
+    "tunnel_url": "https://confidential-discipline-gnu-nutrition.trycloudflare.com"
   },
   "last_activity": {
     "agent": "Marcus",
-    "action": "created_task_files",
-    "timestamp": "2026-03-14T05:04:00Z"
+    "action": "milestone_complete",
+    "timestamp": "2026-03-14T05:22:00Z"
   }
 }
