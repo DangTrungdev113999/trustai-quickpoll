@@ -6,7 +6,10 @@ import authRoutes from './routes/authRoutes'
 
 const app = express()
 
-app.use(cors())
+app.use(cors({
+  origin: true,
+  credentials: true
+}))
 app.use(express.json())
 app.use(cookieParser())
 
@@ -27,18 +30,15 @@ app.use((err: Error, _req: express.Request, res: express.Response, _next: expres
       POLL_NOT_FOUND: 404,
       ALREADY_VOTED: 409,
       INVALID_OPTION: 400,
-      FORBIDDEN: 403,
       POLL_CLOSED: 400,
       UNAUTHORIZED: 401,
     }
 
-    const status = statusMap[code] ?? 500
-    res.status(status).json({ error: errorMessage, code })
-    return
+    const status = statusMap[code] || 500
+    return res.status(status).json({ error: errorMessage })
   }
 
-  console.error(err)
-  res.status(500).json({ error: 'Internal server error', code: 'INTERNAL_ERROR' })
+  res.status(500).json({ error: message })
 })
 
 export default app
