@@ -102,7 +102,7 @@ export function DashboardPage() {
               <Button
                 variant="ghost"
                 size="icon"
-                className="h-8 w-8 opacity-0 transition-opacity group-hover:opacity-100"
+                className="h-8 w-8"
                 onClick={(e) => {
                   e.stopPropagation()
                   setDeleteTarget(poll.id)
