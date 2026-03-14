@@ -6,8 +6,8 @@
   "current_milestone": null,
   "milestones": [],
   "ports": {
-    "backend": 3001,
-    "frontend": 5173,
+    "backend": 3002,
+    "frontend": 5174,
     "tunnel_url": null
   },
   "last_activity": {

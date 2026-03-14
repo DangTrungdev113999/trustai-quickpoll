@@ -1,7 +1,7 @@
 # quickpoll
 
 ## Project
-- Description: QuickPoll - Fast polling app with real-time results
+- Description: QuickPoll - App tạo poll bình chọn nhanh
 - GitHub: git@github.com:DangTrungdev113999/trustai-quickpoll.git
 - Started: 2026-03-14
 

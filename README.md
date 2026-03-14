@@ -1,4 +1,4 @@
 # quickpoll
-> QuickPoll - Fast polling app with real-time results
+> QuickPoll - App tạo poll bình chọn nhanh
 
-**Started:** 2026-03-14 | **Ports:** BE=3001, FE=5173
+**Started:** 2026-03-14 | **Ports:** BE=3002, FE=5174
