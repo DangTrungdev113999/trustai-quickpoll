@@ -1,0 +1,40 @@
+import { describe, it, expect } from 'vitest'
+import { render, screen } from '@testing-library/react'
+import { MemoryRouter } from 'react-router-dom'
+import { CreatePollPage } from '../components/CreatePollPage'
+
+describe('CreatePollPage', () => {
+  function renderPage() {
+    return render(
+      <MemoryRouter>
+        <CreatePollPage />
+      </MemoryRouter>,
+    )
+  }
+
+  it('should render the page heading', () => {
+    renderPage()
+    expect(screen.getByRole('heading', { name: /create.*poll/i })).toBeInTheDocument()
+  })
+
+  it('should render a question input field', () => {
+    renderPage()
+    expect(screen.getByRole('textbox', { name: /question/i })).toBeInTheDocument()
+  })
+
+  it('should render at least 2 option input fields by default', () => {
+    renderPage()
+    const optionInputs = screen.getAllByRole('textbox', { name: /option/i })
+    expect(optionInputs.length).toBeGreaterThanOrEqual(2)
+  })
+
+  it('should render an add option button', () => {
+    renderPage()
+    expect(screen.getByRole('button', { name: /add.*option/i })).toBeInTheDocument()
+  })
+
+  it('should render a submit/create button', () => {
+    renderPage()
+    expect(screen.getByRole('button', { name: /create|submit/i })).toBeInTheDocument()
+  })
+})
