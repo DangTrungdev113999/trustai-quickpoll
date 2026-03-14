@@ -1,2 +1,22 @@
 export type { Poll, PollOption, PollResults, VoteCount } from './poll'
-export type { CreatePollRequest, CreatePollResponse, VoteRequest, VoteResponse, ErrorCode, ErrorResponse } from './api'
+export type {
+  CreatePollRequest,
+  CreatePollResponse,
+  VoteRequest,
+  VoteResponse,
+  ErrorCode,
+  ErrorResponse,
+  User,
+  AuthSession,
+  SendMagicLinkRequest,
+  SendMagicLinkResponse,
+  VerifyMagicLinkRequest,
+  VerifyMagicLinkResponse,
+  MeResponse,
+  DashboardPollItem,
+  DashboardResponse,
+  QRCodeData,
+  ClosePollResponse,
+  MigratePollsRequest,
+  MigratePollsResponse,
+} from './api'

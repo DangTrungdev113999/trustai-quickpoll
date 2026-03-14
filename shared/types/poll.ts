@@ -7,6 +7,9 @@ export interface Poll {
   id: string
   question: string
   options: PollOption[]
+  allowMultiple: boolean
+  status: 'active' | 'closed'
+  ownerId?: string
   createdAt: string // ISO 8601
 }
 
