@@ -17,6 +17,8 @@ describe('VotePollPage', () => {
           { id: 'opt-1', text: 'Red' },
           { id: 'opt-2', text: 'Blue' },
         ],
+        allowMultiple: false,
+        status: 'active',
         createdAt: '2026-01-01T00:00:00Z',
       },
       votes: [
@@ -39,7 +41,7 @@ describe('VotePollPage', () => {
 
   it('should render the poll question as a heading', () => {
     renderPage()
-    expect(screen.getByRole('heading')).toBeInTheDocument()
+    expect(screen.getByRole('heading', { name: /favorite color/i })).toBeInTheDocument()
   })
 
   it('should render poll options as selectable elements', () => {
@@ -51,6 +53,6 @@ describe('VotePollPage', () => {
 
   it('should render a vote/submit button', () => {
     renderPage()
-    expect(screen.getByRole('button', { name: /vote|submit/i })).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: /vote/i })).toBeInTheDocument()
   })
 })

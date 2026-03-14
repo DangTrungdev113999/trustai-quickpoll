@@ -5,6 +5,8 @@ import { toast } from 'sonner'
 import { Button } from '@/components/ui/button'
 import { Label } from '@/components/ui/label'
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group'
+import { Checkbox } from '@/components/ui/checkbox'
+import { Header } from '@/components/layout/Header'
 import { usePoll, useVotePoll } from '../api/queries'
 import type { PollResults } from '@shared/types/poll'
 
@@ -64,75 +66,150 @@ export function VotePollPage() {
   const { pollId = '' } = useParams<{ pollId: string }>()
   const { data: results, isLoading, error } = usePoll(pollId)
   const voteMutation = useVotePoll(pollId)
-  const [selectedOption, setSelectedOption] = useState('')
+  const [selectedOptions, setSelectedOptions] = useState<string[]>([])
   const [justVoted, setJustVoted] = useState(false)
 
   const alreadyVoted = results?.hasVoted || justVoted
   const hasVotedBefore = localStorage.getItem(`voted:${pollId}`)
+  const allowMultiple = results?.poll.allowMultiple ?? false
+
+  function toggleOption(optionId: string) {
+    if (!allowMultiple) {
+      setSelectedOptions([optionId])
+      return
+    }
+    setSelectedOptions((prev) =>
+      prev.includes(optionId) ? prev.filter((id) => id !== optionId) : [...prev, optionId],
+    )
+  }
 
   async function handleVote() {
-    if (!selectedOption) return
+    if (selectedOptions.length === 0) return
     try {
-      await voteMutation.mutateAsync({ optionId: selectedOption })
+      await voteMutation.mutateAsync({ optionIds: selectedOptions })
       localStorage.setItem(`voted:${pollId}`, 'true')
       setJustVoted(true)
       toast.success('Vote thành công!')
     } catch (err) {
-      toast.error(err instanceof Error ? err.message : 'Không thể kết nối. Thử lại sau')
+      if (err instanceof Error) {
+        if (err.message.includes('ALREADY_VOTED')) {
+          toast.error('Bạn đã vote rồi!')
+        } else if (err.message.includes('POLL_CLOSED')) {
+          toast.error('Poll đã đóng, không thể vote!')
+        } else {
+          toast.error(err.message)
+        }
+      } else {
+        toast.error('Không thể kết nối. Thử lại sau')
+      }
     }
   }
 
   if (isLoading) {
     return (
-      <div className="flex min-h-screen items-center justify-center p-4">
-        <PollSkeleton />
-      </div>
+      <>
+        <Header />
+        <div className="flex min-h-screen items-center justify-center p-4">
+          <PollSkeleton />
+        </div>
+      </>
     )
   }
 
   if (error || !results) {
     return (
-      <div className="flex min-h-screen flex-col items-center justify-center gap-4 p-4">
-        <SearchX className="h-16 w-16 text-muted-foreground" />
-        <h1 className="text-2xl font-bold">Poll không tồn tại</h1>
-        <Button onClick={() => (window.location.href = '/')}>Tạo poll mới</Button>
-      </div>
+      <>
+        <Header />
+        <div className="flex min-h-screen items-center justify-center p-4">
+          <div className="flex max-w-md flex-col items-center gap-4 text-center">
+            <SearchX className="h-16 w-16 text-muted-foreground" />
+            <h1 className="text-2xl font-bold">Poll không tìm thấy</h1>
+            <p className="text-muted-foreground">{error?.message || 'Poll này không tồn tại hoặc đã bị xóa'}</p>
+          </div>
+        </div>
+      </>
     )
   }
 
-  const showResults = alreadyVoted || !!hasVotedBefore
+  if (alreadyVoted || hasVotedBefore) {
+    return (
+      <>
+        <Header />
+        <div className="flex min-h-screen items-center justify-center p-4">
+          <div className="w-full max-w-[600px] space-y-6">
+            <div>
+              <h1 className="text-3xl font-bold">{results.poll.question}</h1>
+              {allowMultiple && (
+                <p className="mt-1 text-sm text-muted-foreground">
+                  (Multiple choice - voters có thể chọn nhiều)
+                </p>
+              )}
+            </div>
+            <ResultsView results={results} justVoted={justVoted} />
+          </div>
+        </div>
+      </>
+    )
+  }
 
   return (
-    <div className="flex min-h-screen items-center justify-center p-4">
-      <div className="w-full max-w-[600px] space-y-6">
-        <h1 className="text-3xl font-bold">{results.poll.question}</h1>
+    <>
+      <Header />
+      <div className="flex min-h-screen items-center justify-center p-4">
+        <div className="w-full max-w-[600px] space-y-6">
+          <div>
+            <h1 className="text-3xl font-bold">{results.poll.question}</h1>
+            {allowMultiple && (
+              <p className="mt-1 text-sm text-muted-foreground">
+                Bạn có thể chọn nhiều lựa chọn
+              </p>
+            )}
+          </div>
 
-        {showResults ? (
-          <ResultsView results={results} justVoted={justVoted} />
-        ) : (
-          <>
-            <RadioGroup value={selectedOption} onValueChange={setSelectedOption}>
-              {results.poll.options.map((opt) => (
-                <div key={opt.id} className="flex items-center gap-3 rounded-md border p-3">
-                  <RadioGroupItem value={opt.id} id={`vote-${opt.id}`} />
-                  <Label htmlFor={`vote-${opt.id}`} className="flex-1 cursor-pointer">
-                    {opt.text}
-                  </Label>
-                </div>
-              ))}
-            </RadioGroup>
+          <div className="space-y-3">
+            {!allowMultiple ? (
+              <RadioGroup value={selectedOptions[0] || ''} onValueChange={(val) => setSelectedOptions([val])}>
+                {results.poll.options.map((opt) => (
+                  <div key={opt.id} className="flex items-center space-x-3 rounded-lg border p-3 hover:bg-muted/50">
+                    <RadioGroupItem value={opt.id} id={opt.id} />
+                    <Label htmlFor={opt.id} className="flex-1 cursor-pointer">
+                      {opt.text}
+                    </Label>
+                  </div>
+                ))}
+              </RadioGroup>
+            ) : (
+              <div className="space-y-3">
+                {results.poll.options.map((opt) => (
+                  <div
+                    key={opt.id}
+                    className="flex items-center space-x-3 rounded-lg border p-3 hover:bg-muted/50 cursor-pointer"
+                    onClick={() => toggleOption(opt.id)}
+                  >
+                    <Checkbox
+                      id={opt.id}
+                      checked={selectedOptions.includes(opt.id)}
+                      onCheckedChange={() => toggleOption(opt.id)}
+                    />
+                    <Label htmlFor={opt.id} className="flex-1 cursor-pointer">
+                      {opt.text}
+                    </Label>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
 
-            <Button
-              className="w-full"
-              disabled={!selectedOption || voteMutation.isPending}
-              onClick={handleVote}
-            >
-              {voteMutation.isPending && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-              {voteMutation.isPending ? 'Đang gửi...' : 'Vote'}
-            </Button>
-          </>
-        )}
+          <Button
+            onClick={handleVote}
+            disabled={selectedOptions.length === 0 || voteMutation.isPending}
+            className="w-full"
+          >
+            {voteMutation.isPending && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+            {voteMutation.isPending ? 'Đang gửi...' : 'Vote'}
+          </Button>
+        </div>
       </div>
-    </div>
+    </>
   )
 }

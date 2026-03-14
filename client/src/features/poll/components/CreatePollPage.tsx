@@ -7,7 +7,9 @@ import { toast } from 'sonner'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
+import { Checkbox } from '@/components/ui/checkbox'
 import { Card, CardContent } from '@/components/ui/card'
+import { Header } from '@/components/layout/Header'
 import { useCreatePoll } from '../api/queries'
 import { createPollSchema, type CreatePollInput } from '../schemas/create-poll'
 
@@ -27,6 +29,7 @@ export function CreatePollPage() {
     defaultValues: {
       question: '',
       options: ['', ''],
+      allowMultiple: false,
     },
   })
 
@@ -71,119 +74,141 @@ export function CreatePollPage() {
   if (successData) {
     const fullUrl = `${window.location.origin}${successData.shareUrl}`
     return (
-      <div className="flex min-h-screen items-center justify-center p-4">
-        <div className="w-full max-w-[600px] space-y-6">
-          <div className="text-center">
-            <h1 className="text-3xl font-bold">{successData.question}</h1>
-            <p className="mt-2 text-muted-foreground">✅ Poll đã tạo thành công!</p>
-          </div>
+      <>
+        <Header />
+        <div className="flex min-h-screen items-center justify-center p-4">
+          <div className="w-full max-w-[600px] space-y-6">
+            <div className="text-center">
+              <h1 className="text-3xl font-bold">{successData.question}</h1>
+              <p className="mt-2 text-muted-foreground">✅ Poll đã tạo thành công!</p>
+            </div>
 
-          <Card>
-            <CardContent className="space-y-4 pt-6">
-              <div className="space-y-2">
-                <Label className="text-sm font-medium">Share link (cho voters):</Label>
-                <div className="flex gap-2">
-                  <Input value={fullUrl} readOnly className="flex-1 text-sm" />
-                  <Button onClick={handleCopy} variant="outline" size="icon">
-                    {copied ? <Check className="h-4 w-4" /> : <Copy className="h-4 w-4" />}
-                  </Button>
+            <Card>
+              <CardContent className="space-y-4 pt-6">
+                <div className="space-y-2">
+                  <Label className="text-sm font-medium">Share link (cho voters):</Label>
+                  <div className="flex gap-2">
+                    <Input value={fullUrl} readOnly className="flex-1 text-sm" />
+                    <Button onClick={handleCopy} variant="outline" size="icon">
+                      {copied ? <Check className="h-4 w-4" /> : <Copy className="h-4 w-4" />}
+                    </Button>
+                  </div>
+                  <p className="text-xs text-muted-foreground">
+                    Gửi link này cho mọi người để họ vote
+                  </p>
                 </div>
-                <p className="text-xs text-muted-foreground">
-                  Gửi link này cho mọi người để họ vote
-                </p>
-              </div>
 
-              <div className="space-y-3 pt-2">
-                <Button
-                  onClick={() => navigate('/dashboard')}
-                  className="w-full"
-                  variant="default"
-                >
-                  <LayoutDashboard className="mr-2 h-4 w-4" />
-                  Xem trên Dashboard
-                </Button>
-                <p className="text-center text-xs text-muted-foreground">
-                  Dashboard: xem kết quả real-time, QR code, quản lý polls
-                </p>
-
-                <div className="flex gap-2">
+                <div className="space-y-3 pt-2">
                   <Button
-                    onClick={() => window.open(fullUrl, '_blank')}
-                    variant="outline"
-                    className="flex-1"
+                    onClick={() => navigate('/dashboard')}
+                    className="w-full"
+                    variant="default"
                   >
-                    <ExternalLink className="mr-2 h-4 w-4" />
-                    Xem vote page
+                    <LayoutDashboard className="mr-2 h-4 w-4" />
+                    Xem trên Dashboard
                   </Button>
-                  <Button onClick={() => navigate('/create')} variant="outline" className="flex-1">
-                    <Plus className="mr-2 h-4 w-4" />
-                    Tạo poll mới
-                  </Button>
+                  <p className="text-center text-xs text-muted-foreground">
+                    Dashboard: xem kết quả real-time, QR code, quản lý polls
+                  </p>
+
+                  <div className="flex gap-2">
+                    <Button
+                      onClick={() => window.open(fullUrl, '_blank')}
+                      variant="outline"
+                      className="flex-1"
+                    >
+                      <ExternalLink className="mr-2 h-4 w-4" />
+                      Xem vote page
+                    </Button>
+                    <Button onClick={() => navigate('/create')} variant="outline" className="flex-1">
+                      <Plus className="mr-2 h-4 w-4" />
+                      Tạo poll mới
+                    </Button>
+                  </div>
                 </div>
-              </div>
-            </CardContent>
-          </Card>
+              </CardContent>
+            </Card>
+          </div>
         </div>
-      </div>
+      </>
     )
   }
 
   const isFormEmpty = !form.watch('question') && options.every((o) => !o)
 
   return (
-    <div className="flex min-h-screen items-center justify-center p-4">
-      <div className="w-full max-w-[600px] space-y-6">
-        <h1 className="text-3xl font-bold">Create Poll</h1>
+    <>
+      <Header />
+      <div className="flex min-h-screen items-center justify-center p-4">
+        <div className="w-full max-w-[600px] space-y-6">
+          <h1 className="text-3xl font-bold">Tạo Poll Mới</h1>
 
-        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-          <div className="space-y-2">
-            <Label htmlFor="question">Question</Label>
-            <Input id="question" placeholder="Câu hỏi của bạn?" {...form.register('question')} />
-            {form.formState.errors.question && (
-              <p className="text-sm text-destructive">{form.formState.errors.question.message}</p>
-            )}
-          </div>
+          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+            <div className="space-y-2">
+              <Label htmlFor="question">Câu hỏi</Label>
+              <Input id="question" placeholder="Câu hỏi của bạn?" {...form.register('question')} />
+              {form.formState.errors.question && (
+                <p className="text-sm text-destructive">{form.formState.errors.question.message}</p>
+              )}
+            </div>
 
-          <div className="space-y-3">
-            {Array.from({ length: optionCount }).map((_, i) => (
-              <div key={i} className="flex items-end gap-2">
-                <div className="flex-1 space-y-2">
-                  <Label htmlFor={`option-${i}`}>Option {i + 1}</Label>
-                  <Input id={`option-${i}`} placeholder={`Lựa chọn ${i + 1}`} {...form.register(`options.${i}`)} />
+            <div className="space-y-3">
+              {Array.from({ length: optionCount }).map((_, i) => (
+                <div key={i} className="flex items-end gap-2">
+                  <div className="flex-1 space-y-2">
+                    <Label htmlFor={`option-${i}`}>Lựa chọn {i + 1}</Label>
+                    <Input id={`option-${i}`} placeholder={`Lựa chọn ${i + 1}`} {...form.register(`options.${i}`)} />
+                  </div>
+                  {optionCount > 2 && (
+                    <Button type="button" variant="ghost" size="icon" onClick={() => removeOption(i)} className="mb-0.5">
+                      <X className="h-4 w-4" />
+                    </Button>
+                  )}
                 </div>
-                {optionCount > 2 && (
-                  <Button type="button" variant="ghost" size="icon" onClick={() => removeOption(i)} className="mb-0.5">
-                    <X className="h-4 w-4" />
-                  </Button>
-                )}
+              ))}
+              {form.formState.errors.options && (
+                <p className="text-sm text-destructive">
+                  {form.formState.errors.options.message ?? form.formState.errors.options.root?.message}
+                </p>
+              )}
+            </div>
+
+            <div className="flex items-center gap-2 rounded-lg border p-3">
+              <Checkbox
+                id="allowMultiple"
+                checked={form.watch('allowMultiple') ?? false}
+                onCheckedChange={(checked) => form.setValue('allowMultiple', checked as boolean)}
+              />
+              <div className="flex-1">
+                <label htmlFor="allowMultiple" className="cursor-pointer text-sm font-medium leading-none">
+                  Cho phép chọn nhiều lựa chọn
+                </label>
+                <p className="text-xs text-muted-foreground">
+                  Voters có thể chọn nhiều options (checkboxes thay vì radio buttons)
+                </p>
               </div>
-            ))}
-            {form.formState.errors.options && (
-              <p className="text-sm text-destructive">
-                {form.formState.errors.options.message ?? form.formState.errors.options.root?.message}
-              </p>
-            )}
-          </div>
+            </div>
 
-          <div className="flex gap-3">
-            <Button
-              type="button"
-              variant="outline"
-              onClick={addOption}
-              disabled={optionCount >= 5}
-              title={optionCount >= 5 ? 'Tối đa 5 lựa chọn' : undefined}
-            >
-              <Plus className="mr-2 h-4 w-4" />
-              Add Option
+            <div className="flex gap-3">
+              <Button
+                type="button"
+                variant="outline"
+                onClick={addOption}
+                disabled={optionCount >= 5}
+                title={optionCount >= 5 ? 'Tối đa 5 lựa chọn' : undefined}
+              >
+                <Plus className="mr-2 h-4 w-4" />
+                Thêm lựa chọn
+              </Button>
+            </div>
+
+            <Button type="submit" className="w-full" disabled={isFormEmpty || createPoll.isPending}>
+              {createPoll.isPending && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+              {createPoll.isPending ? 'Đang tạo...' : 'Tạo Poll'}
             </Button>
-          </div>
-
-          <Button type="submit" className="w-full" disabled={isFormEmpty || createPoll.isPending}>
-            {createPoll.isPending && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-            {createPoll.isPending ? 'Đang tạo...' : 'Create Poll'}
-          </Button>
-        </form>
+          </form>
+        </div>
       </div>
-    </div>
+    </>
   )
 }

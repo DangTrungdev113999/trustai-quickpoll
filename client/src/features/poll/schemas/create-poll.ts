@@ -7,6 +7,7 @@ export const createPollSchema = z.object({
     .min(2, 'Cần ít nhất 2 lựa chọn')
     .max(5, 'Tối đa 5 lựa chọn')
     .refine((opts) => new Set(opts).size === opts.length, 'Không được trùng lặp'),
+  allowMultiple: z.boolean().optional(),
 })
 
 export type CreatePollInput = z.infer<typeof createPollSchema>

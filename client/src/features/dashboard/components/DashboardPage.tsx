@@ -1,3 +1,4 @@
+import { Header } from '@/components/layout/Header'
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { Plus, BarChart3, Trash2, Eye } from 'lucide-react'
@@ -117,6 +118,8 @@ export function DashboardPage() {
   }
 
   return (
+    <>
+      <Header />
     <div className="mx-auto max-w-4xl space-y-6 p-4">
       <div className="flex items-center justify-between">
         <div>
@@ -147,5 +150,6 @@ export function DashboardPage() {
         <DeletePollModal pollId={deleteTarget} open={true} onClose={() => setDeleteTarget(null)} />
       )}
     </div>
+    </>
   )
 }

@@ -20,27 +20,27 @@ describe('CreatePollPage', () => {
 
   it('should render the page heading', () => {
     renderPage()
-    expect(screen.getByRole('heading', { name: /create.*poll/i })).toBeInTheDocument()
+    expect(screen.getByRole('heading', { name: /tạo poll mới/i })).toBeInTheDocument()
   })
 
   it('should render a question input field', () => {
     renderPage()
-    expect(screen.getByRole('textbox', { name: /question/i })).toBeInTheDocument()
+    expect(screen.getByRole('textbox', { name: /câu hỏi/i })).toBeInTheDocument()
   })
 
   it('should render at least 2 option input fields by default', () => {
     renderPage()
-    const optionInputs = screen.getAllByRole('textbox', { name: /option/i })
+    const optionInputs = screen.getAllByRole('textbox', { name: /lựa chọn/i })
     expect(optionInputs.length).toBeGreaterThanOrEqual(2)
   })
 
   it('should render an add option button', () => {
     renderPage()
-    expect(screen.getByRole('button', { name: /add.*option/i })).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: /thêm lựa chọn/i })).toBeInTheDocument()
   })
 
   it('should render a submit/create button', () => {
     renderPage()
-    expect(screen.getByRole('button', { name: /create|submit/i })).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: /tạo poll/i })).toBeInTheDocument()
   })
 })
