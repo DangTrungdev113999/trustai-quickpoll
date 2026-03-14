@@ -23,11 +23,11 @@
   "ports": {
     "backend": 3002,
     "frontend": 5174,
-    "tunnel_url": "https://metals-cookie-financing-curtis.trycloudflare.com"
+    "tunnel_url": "https://syndrome-interesting-favors-reasons.trycloudflare.com"
   },
   "last_activity": {
     "agent": "Marcus",
-    "action": "tunnel_restart",
-    "timestamp": "2026-03-14T06:45:00Z"
+    "action": "fix_realtime_routing",
+    "timestamp": "2026-03-14T06:49:00Z"
   }
 }
