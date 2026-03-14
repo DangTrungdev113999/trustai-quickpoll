@@ -10,3 +10,4 @@ build/
 *.sqlite
 test-results/
 playwright-report/
+.vercel
